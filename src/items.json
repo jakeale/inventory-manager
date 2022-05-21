@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+        "name": "paint",
+        "price": 10,
+        "quantity": 1
+      },
+      {
+        "name": "garbage",
+        "price": 10,
+        "quantity": 1
+      }
+
+
+  ]
+}
