@@ -17,10 +17,14 @@ import {
 import ky from "ky";
 import { useEffect, useState } from "react";
 import { Item } from "../App";
-import { TableRow } from "./TableRow";
 import { AddWarehouse } from "./AddWarehouse";
+import { AiFillEdit } from "react-icons/ai";
 
-export const AddItem = () => {
+type EditItemProps = {
+  name: string;
+};
+
+export const EditItem = ({ name }: EditItemProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialState = { name: "", price: "", quantity: "" };
@@ -46,8 +50,8 @@ export const AddItem = () => {
     fetchWarehouses();
   }, []);
 
-  const handleAddItems = async (newItem: Item) => {
-    await ky.post(`/items/${newItem.name}`, { json: newItem });
+  const handleEditItems = async (newItem: Item) => {
+    await ky.put(`/items/${name}`, { json: newItem });
   };
 
   const handleAddButtonClick = () => {
@@ -61,7 +65,7 @@ export const AddItem = () => {
       return;
     }
 
-    handleAddItems(newItem);
+    handleEditItems(newItem);
     onClose();
     setInput(initialState);
   };
@@ -72,14 +76,14 @@ export const AddItem = () => {
 
   return (
     <>
-      <Button colorScheme="blue" onClick={onOpen}>
-        Add Item
+      <Button colorScheme="yellow" onClick={onOpen}>
+        <AiFillEdit />
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Add Item</ModalHeader>
+          <ModalHeader>Edit Item</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
@@ -117,12 +121,12 @@ export const AddItem = () => {
 
           <ModalFooter>
             <Button
-              colorScheme="blue"
+              colorScheme="yellow"
               mr={3}
               onClick={handleAddButtonClick}
               isDisabled={Object.values(input).some(isInvalid)}
             >
-              Add
+              Save
             </Button>
             <Button variant="ghost" onClick={onClose}>
               Close

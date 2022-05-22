@@ -1,13 +1,26 @@
 import { Button, Td, Tr, ButtonGroup } from "@chakra-ui/react";
-import { AiFillEdit, AiFillDelete } from "react-icons/ai";
+import ky from "ky";
+import { AiFillDelete } from "react-icons/ai";
+import { Item } from "../App";
+import { EditItem } from "./EditItem";
 
 export type TableRowProps = {
   name: string;
   price: number;
   quantity: number;
+  handleSetItems: (newItem: Item) => void;
 };
 
-export const TableRow = ({ name, price, quantity }: TableRowProps) => {
+export const TableRow = ({
+  name,
+  price,
+  quantity,
+  handleSetItems,
+}: TableRowProps) => {
+  const handleItemDeletion = async (name: string) => {
+    await ky.delete(`/items/${name}`);
+  };
+
   return (
     <Tr justifyContent="flex-start">
       <Td>{name}</Td>
@@ -15,10 +28,8 @@ export const TableRow = ({ name, price, quantity }: TableRowProps) => {
       <Td isNumeric>{quantity}</Td>
       <Td>
         <ButtonGroup>
-          <Button colorScheme="yellow">
-            <AiFillEdit></AiFillEdit>
-          </Button>
-          <Button colorScheme="red">
+          <EditItem name={name} />
+          <Button colorScheme="red" onClick={() => handleItemDeletion(name)}>
             <AiFillDelete />
           </Button>
         </ButtonGroup>

@@ -8,23 +8,41 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AddItem } from "./components/AddItem";
 import { TableRow } from "./components/TableRow";
-import data from "./items.json";
+import ky from "ky";
 
-function App() {
-  const [items, setItems] = useState(data.items);
-
-  const handleSetItems = (newItem: {
-    name: string;
+type Items = {
+  [key: string]: {
     price: number;
     quantity: number;
-  }) => {
-    const newItems = [...items, newItem];
-
-    setItems(newItems);
   };
+};
+
+export type Item = {
+  name: string;
+  price: number;
+  quantity: number;
+};
+
+function App() {
+  const initialState: Items = {};
+  const [items, setItems] = useState(initialState);
+
+  const handleSetItems = async (newItem: Item) => {
+    await ky.post(`/items/${newItem.name}`, { json: newItem });
+  };
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      const items: Items = await ky.get("/items").json();
+
+      setItems(items);
+    };
+
+    fetchItems();
+  });
 
   return (
     <Flex height="100vh" alignItems="center" justifyContent="center">
@@ -43,18 +61,19 @@ function App() {
               </Tr>
             </Thead>
             <Tbody>
-              {items.map((item) => (
+              {Object.keys(items).map((key) => (
                 <TableRow
-                  name={item.name}
-                  key={item.name}
-                  price={item.price}
-                  quantity={item.quantity}
+                  name={key}
+                  key={key}
+                  price={items[key]["price"]}
+                  quantity={items[key]["quantity"]}
+                  handleSetItems={handleSetItems}
                 ></TableRow>
               ))}
             </Tbody>
           </Table>
           <Flex justifyContent="center">
-            <AddItem handleSetItems={handleSetItems} />
+            <AddItem />
           </Flex>
         </TableContainer>
       </Flex>

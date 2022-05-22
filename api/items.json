@@ -1,0 +1,14 @@
+{
+  "items": {
+    "agd": {
+      "price": 2,
+      "quantity": 2
+    }
+  },
+  "warehouses": [
+    "Canada",
+    "USA",
+    "Taiwan",
+    "China"
+  ]
+}
