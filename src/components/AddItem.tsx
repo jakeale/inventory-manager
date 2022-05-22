@@ -2,7 +2,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Icon,
   Input,
   Modal,
   ModalBody,
@@ -17,7 +16,6 @@ import {
 import ky from "ky";
 import { useEffect, useState } from "react";
 import { Item } from "../App";
-import { TableRow } from "./TableRow";
 import { AddWarehouse } from "./AddWarehouse";
 
 export const AddItem = () => {
