@@ -1,5 +1,6 @@
 import {
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -25,7 +26,8 @@ type AddItemProps = {
 export const AddItem = ({ handleSetItems }: AddItemProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [input, setInput] = useState({ name: "", price: "", quantity: "" });
+  const initialState = { name: "", price: "", quantity: "" };
+  const [input, setInput] = useState(initialState);
 
   const handleInputChange = (e: { target: { value: string; id: string } }) => {
     const value = e.target.value;
@@ -36,28 +38,20 @@ export const AddItem = ({ handleSetItems }: AddItemProps) => {
     });
   };
 
-  const handleFormSubmission = (e: {
-    name: string;
-    price: string;
-    quantity: string;
-  }) => {
-    const newItem = {
-      name: e.name,
-      price: parseFloat(e.price),
-      quantity: parseInt(e.quantity),
-    };
-  };
-
   const handleAddButtonClick = () => {
-    onClose();
-
     const newItem = {
       name: input.name,
       price: parseFloat(input.price),
       quantity: parseInt(input.quantity),
     };
 
+    if (isNaN(newItem.price) || isNaN(newItem.quantity)) {
+      return;
+    }
+
     handleSetItems(newItem);
+    onClose();
+    setInput(initialState);
   };
 
   const isInvalid = (field: string) => {
@@ -69,13 +63,14 @@ export const AddItem = ({ handleSetItems }: AddItemProps) => {
       <Button colorScheme="blue" onClick={onOpen}>
         Add Item
       </Button>
+
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Add Item</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <FormControl onSubmit={() => handleFormSubmission(input)}>
+            <FormControl>
               <FormLabel htmlFor="name">Name</FormLabel>
               <Input
                 id="name"
@@ -83,7 +78,6 @@ export const AddItem = ({ handleSetItems }: AddItemProps) => {
                 onChange={handleInputChange}
                 isInvalid={isInvalid(input.name)}
               />
-
               <FormLabel htmlFor="price">Price</FormLabel>
               <Input
                 id="price"
