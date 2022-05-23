@@ -1,7 +1,7 @@
 import express from "express";
 import { readFile, writeFile } from "fs/promises";
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.use(express.json());
@@ -9,6 +9,10 @@ app.use(express.json());
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(`./public`));
+}
 
 const writeItems = async (items) => {
   writeFile(
