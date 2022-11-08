@@ -22,8 +22,8 @@ type Items = {
 
 export type Item = {
   name: string;
-  price: number;
-  quantity: number;
+  price: number | string;
+  quantity: number | string;
 };
 
 function App() {

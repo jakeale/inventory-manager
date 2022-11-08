@@ -1,6 +1,7 @@
 import {
   Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   Modal,
@@ -10,23 +11,41 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
+  NumberInput,
+  NumberInputField,
   useDisclosure,
 } from "@chakra-ui/react";
 import ky from "ky";
-import { useEffect, useState } from "react";
+import { useReducer, useRef, useState } from "react";
 import { Item } from "../App";
-import { AddWarehouse } from "./AddWarehouse";
 
 export const AddItem = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+  const isInvalid = {
+    name: useRef(false),
+    price: useRef(false),
+    quantity: useRef(false),
+  };
 
-  const initialState = { name: "", price: "", quantity: "" };
-  const [input, setInput] = useState(initialState);
-  const [warehouses, setWarehouses] = useState([]);
+  const [input, setInput] = useState<Item>({
+    name: "",
+    price: "",
+    quantity: "",
+  });
 
-  const handleInputChange = (e: { target: { value: string; id: string } }) => {
-    const value = e.target.value;
+  const handleClose = () => {
+    onClose();
+
+    for (const field in isInvalid) {
+      isInvalid[field as keyof typeof isInvalid].current = false;
+    }
+
+    setInput({ name: "", price: "", quantity: "" });
+  };
+
+  const handleInputChange = (e: { target: { value: any; id: any } }) => {
+    const value = e.target.value.replace(/^\$/, "");
 
     setInput({
       ...input,
@@ -34,38 +53,39 @@ export const AddItem = () => {
     });
   };
 
-  useEffect(() => {
-    const fetchWarehouses = async () => {
-      const items: [] = await ky.get("/warehouses").json();
-
-      setWarehouses(items);
-    };
-
-    fetchWarehouses();
-  }, []);
-
   const handleAddItems = async (newItem: Item) => {
     await ky.post(`/items/${newItem.name}`, { json: newItem });
+  };
+
+  const isInvalidForm = () => {
+    let invalid = false;
+
+    for (const field in input) {
+      if (["", 0].includes(input[field as keyof Item])) {
+        isInvalid[field as keyof typeof isInvalid].current = true;
+        invalid = true;
+      } else {
+        isInvalid[field as keyof typeof isInvalid].current = false;
+      }
+    }
+
+    return invalid;
   };
 
   const handleAddButtonClick = () => {
     const newItem = {
       name: input.name,
-      price: parseFloat(input.price),
-      quantity: parseInt(input.quantity),
+      price: input.price,
+      quantity: input.quantity,
     };
 
-    if (isNaN(newItem.price) || isNaN(newItem.quantity)) {
+    if (isInvalidForm()) {
+      forceUpdate();
       return;
     }
 
     handleAddItems(newItem);
-    onClose();
-    setInput(initialState);
-  };
-
-  const isInvalid = (field: string) => {
-    return field === "";
+    handleClose();
   };
 
   return (
@@ -80,49 +100,65 @@ export const AddItem = () => {
           <ModalHeader>Add Item</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <FormControl>
-              <FormLabel htmlFor="name">Name</FormLabel>
+            <FormControl
+              isInvalid={Object.values(isInvalid).some((item) => item)}
+              isRequired
+            >
+              <FormLabel htmlFor="name" marginBottom={2}>
+                Name
+              </FormLabel>
               <Input
                 id="name"
                 value={input.name}
                 onChange={handleInputChange}
-                isInvalid={isInvalid(input.name)}
+                isInvalid={isInvalid.name.current}
+                placeholder="matcha"
+                marginBottom={1}
               />
-              <FormLabel htmlFor="price">Price</FormLabel>
-              <Input
+              {isInvalid.name.current && (
+                <FormErrorMessage>Name is required</FormErrorMessage>
+              )}
+
+              <FormLabel htmlFor="price" marginTop={2} marginBottom={2}>
+                Price
+              </FormLabel>
+              <NumberInput
                 id="price"
-                value={input.price}
-                onChange={handleInputChange}
-                isInvalid={isInvalid(input.price)}
-              />
-              <FormLabel htmlFor="quantity">Quantity</FormLabel>
-              <Input
+                value={input.price && "$" + input.price}
+                precision={2}
+                isInvalid={isInvalid.price.current}
+                placeholder="number"
+                marginBottom={1}
+              >
+                <NumberInputField onChange={handleInputChange} />
+
+                {isInvalid.price.current && (
+                  <FormErrorMessage>Invalid price</FormErrorMessage>
+                )}
+              </NumberInput>
+
+              <FormLabel htmlFor="quantity" marginTop={2} marginBottom={2}>
+                Quantity
+              </FormLabel>
+              <NumberInput
                 id="quantity"
                 value={input.quantity}
-                onChange={handleInputChange}
-                isInvalid={isInvalid(input.quantity)}
-              />
-              <FormLabel htmlFor="warehouse" marginTop="2px">
-                Warehouse <AddWarehouse></AddWarehouse>
-              </FormLabel>
-              <Select id="warehouse" placeholder="Select warehouse">
-                {warehouses.map((value) => (
-                  <option key={value}>{value}</option>
-                ))}
-              </Select>
+                isInvalid={isInvalid.quantity.current}
+                placeholder="10"
+              >
+                <NumberInputField onChange={handleInputChange} />
+                {isInvalid.quantity.current && (
+                  <FormErrorMessage>Invalid quantity</FormErrorMessage>
+                )}
+              </NumberInput>
             </FormControl>
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              colorScheme="blue"
-              mr={3}
-              onClick={handleAddButtonClick}
-              isDisabled={Object.values(input).some(isInvalid)}
-            >
+            <Button colorScheme="blue" mr={3} onClick={handleAddButtonClick}>
               Add
             </Button>
-            <Button variant="ghost" onClick={onClose}>
+            <Button variant="ghost" onClick={handleClose}>
               Close
             </Button>
           </ModalFooter>
