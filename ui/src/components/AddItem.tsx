@@ -16,6 +16,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import ky from "ky";
+import React from "react";
 import { useReducer, useRef, useState } from "react";
 import { Item } from "../App";
 

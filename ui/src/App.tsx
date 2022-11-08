@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { AddItem } from "./components/AddItem";
 import { TableRow } from "./components/TableRow";
 import ky from "ky";
+import React from "react";
 
 type Items = {
   [key: string]: {

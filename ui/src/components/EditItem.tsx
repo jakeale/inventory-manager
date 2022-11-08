@@ -14,9 +14,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import ky from "ky";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Item } from "../App";
-import { AddWarehouse } from "./AddWarehouse";
 import { AiFillEdit } from "react-icons/ai";
 
 type EditItemProps = {
@@ -107,14 +106,6 @@ export const EditItem = ({ name }: EditItemProps) => {
                 onChange={handleInputChange}
                 isInvalid={isInvalid(input.quantity)}
               />
-              <FormLabel htmlFor="warehouse" marginTop="2px">
-                Warehouse <AddWarehouse></AddWarehouse>
-              </FormLabel>
-              <Select id="warehouse" placeholder="Select warehouse">
-                {warehouses.map((value) => (
-                  <option key={value}>{value}</option>
-                ))}
-              </Select>
             </FormControl>
           </ModalBody>
 
