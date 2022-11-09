@@ -10,11 +10,10 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   useDisclosure,
 } from "@chakra-ui/react";
 import ky from "ky";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Item } from "../App";
 import { AiFillEdit } from "react-icons/ai";
 
@@ -27,7 +26,6 @@ export const EditItem = ({ name }: EditItemProps) => {
 
   const initialState = { name: "", price: "", quantity: "" };
   const [input, setInput] = useState(initialState);
-  const [warehouses, setWarehouses] = useState([]);
 
   const handleInputChange = (e: { target: { value: string; id: string } }) => {
     const value = e.target.value;
@@ -37,16 +35,6 @@ export const EditItem = ({ name }: EditItemProps) => {
       [e.target.id]: value,
     });
   };
-
-  useEffect(() => {
-    const fetchWarehouses = async () => {
-      const items: [] = await ky.get("/warehouses").json();
-
-      setWarehouses(items);
-    };
-
-    fetchWarehouses();
-  }, []);
 
   const handleEditItems = async (newItem: Item) => {
     await ky.put(`/items/${name}`, { json: newItem });
