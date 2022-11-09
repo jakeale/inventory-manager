@@ -128,7 +128,7 @@ export const AddItem = () => {
                 value={input.price && "$" + input.price}
                 precision={2}
                 isInvalid={isInvalid.price.current}
-                placeholder="number"
+                placeholder="$9.99"
                 marginBottom={1}
               >
                 <NumberInputField onChange={handleInputChange} />
