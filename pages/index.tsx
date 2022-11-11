@@ -15,33 +15,21 @@ import { TableRow } from "../components/TableRow";
 import { AddItem } from "../components/AddItem";
 import theme from "../styles/theme";
 import api from "../backend/ky";
-
-type Items = {
-  [key: string]: {
-    price: number;
-    quantity: number;
-  };
-};
-
-export type Item = {
-  name: string;
-  price: number | string;
-  quantity: number | string;
-};
+import { Item } from "@prisma/client";
 
 export default function Home() {
-  const initialState: Items = {};
+  const initialState: Item[] = [];
   const [items, setItems] = useState(initialState);
 
   useEffect(() => {
     const fetchItems = async () => {
-      const items: Items = await api.get("/items").json();
+      const items: Item[] = await api.get("items").json();
 
       setItems(items);
     };
 
     fetchItems();
-  });
+  }, []);
 
   return (
     <ChakraProvider theme={theme}>
@@ -61,12 +49,12 @@ export default function Home() {
                 </Tr>
               </Thead>
               <Tbody>
-                {Object.keys(items).map((key) => (
+                {items.map((item) => (
                   <TableRow
-                    name={key}
-                    key={key}
-                    price={items[key]["price"]}
-                    quantity={items[key]["quantity"]}
+                    name={item.name}
+                    key={item.id}
+                    price={item.price}
+                    quantity={item.quantity}
                   ></TableRow>
                 ))}
               </Tbody>
