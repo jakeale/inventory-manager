@@ -15,8 +15,8 @@ import {
   NumberInputField,
   useDisclosure,
 } from "@chakra-ui/react";
-import ky from "ky";
 import React, { useRef, useState } from "react";
+import api from "../backend/ky";
 import { Item } from "../pages";
 
 type EditItemProps = {
@@ -57,7 +57,7 @@ export const EditItem = ({ name }: EditItemProps) => {
   };
 
   const handleEditItems = async (newItem: Item) => {
-    await ky.put(`/items/${name}`, { json: newItem });
+    await api.put(`/items/${name}`, { json: newItem });
   };
 
   const isInvalidForm = () => {

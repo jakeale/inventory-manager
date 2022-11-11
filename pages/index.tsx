@@ -1,7 +1,4 @@
-import Head from "next/head";
-import Image from "next/image";
 import React from "react";
-import styles from "../styles/Home.module.css";
 import {
   ChakraProvider,
   Flex,
@@ -14,10 +11,10 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import ky from "ky";
 import { TableRow } from "../components/TableRow";
 import { AddItem } from "../components/AddItem";
 import theme from "../styles/theme";
+import api from "../backend/ky";
 
 type Items = {
   [key: string]: {
@@ -38,7 +35,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchItems = async () => {
-      const items: Items = await ky.get("/items").json();
+      const items: Items = await api.get("/items").json();
 
       setItems(items);
     };

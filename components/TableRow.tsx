@@ -1,8 +1,7 @@
 import { Button, Td, Tr, ButtonGroup } from "@chakra-ui/react";
-import ky from "ky";
 import React from "react";
 import { AiFillDelete } from "react-icons/ai";
-import { Item } from "../pages";
+import api from "../backend/ky";
 import { EditItem } from "./EditItem";
 
 export type TableRowProps = {
@@ -13,7 +12,7 @@ export type TableRowProps = {
 
 export const TableRow = ({ name, price, quantity }: TableRowProps) => {
   const handleItemDeletion = async (name: string) => {
-    await ky.delete(`/items/${name}`);
+    await api.delete(`/items/${name}`);
   };
 
   return (
