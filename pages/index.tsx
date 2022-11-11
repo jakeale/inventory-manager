@@ -36,10 +36,6 @@ export default function Home() {
   const initialState: Items = {};
   const [items, setItems] = useState(initialState);
 
-  const handleSetItems = async (newItem: Item) => {
-    await ky.post(`/items/${newItem.name}`, { json: newItem });
-  };
-
   useEffect(() => {
     const fetchItems = async () => {
       const items: Items = await ky.get("/items").json();
@@ -74,7 +70,6 @@ export default function Home() {
                     key={key}
                     price={items[key]["price"]}
                     quantity={items[key]["quantity"]}
-                    handleSetItems={handleSetItems}
                   ></TableRow>
                 ))}
               </Tbody>

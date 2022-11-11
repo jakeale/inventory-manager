@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import ky from "ky";
 import React, { useRef, useState } from "react";
-import { Item } from "../App";
+import { Item } from "../pages";
 
 type EditItemProps = {
   name: string;

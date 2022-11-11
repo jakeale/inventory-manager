@@ -18,7 +18,7 @@ import {
 import ky from "ky";
 import React from "react";
 import { useReducer, useRef, useState } from "react";
-import { Item } from "../App";
+import { Item } from "../pages";
 
 export const AddItem = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
