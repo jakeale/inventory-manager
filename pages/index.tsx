@@ -1,7 +1,10 @@
 import React from "react";
 import {
+  Center,
   ChakraProvider,
   Flex,
+  Skeleton,
+  Spinner,
   Table,
   TableCaption,
   TableContainer,
@@ -31,20 +34,20 @@ export default function Home() {
     <ChakraProvider theme={theme}>
       <Flex height="100vh" alignItems="center" justifyContent="center">
         <Flex border="2px" borderColor="white">
-          <TableContainer>
-            <Table variant="striped" size="lg">
-              <TableCaption placement="top">
-                Inventory Tracking Application
-              </TableCaption>
-              <Thead>
-                <Tr>
-                  <Th>Name</Th>
-                  <Th>Price</Th>
-                  <Th isNumeric>Quantity</Th>
-                  <Th>Actions</Th>
-                </Tr>
-              </Thead>
-              {!isLoading && data ? (
+          {!isLoading && data ? (
+            <TableContainer>
+              <Table variant="striped" size="lg">
+                <TableCaption placement="top">
+                  Inventory Tracking Application
+                </TableCaption>
+                <Thead>
+                  <Tr>
+                    <Th>Name</Th>
+                    <Th>Price</Th>
+                    <Th isNumeric>Quantity</Th>
+                    <Th>Actions</Th>
+                  </Tr>
+                </Thead>
                 <Tbody>
                   {data.map((item) => (
                     <TableRow
@@ -55,12 +58,16 @@ export default function Home() {
                     />
                   ))}
                 </Tbody>
-              ) : undefined}
-            </Table>
-            <Flex justifyContent="center">
-              <AddItem />
-            </Flex>
-          </TableContainer>
+              </Table>
+              <Flex justifyContent="center">
+                <AddItem />
+              </Flex>
+            </TableContainer>
+          ) : (
+            <Center height="250px" width="500px">
+              <Spinner size="lg" />
+            </Center>
+          )}
         </Flex>
       </Flex>
     </ChakraProvider>
