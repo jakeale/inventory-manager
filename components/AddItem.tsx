@@ -15,8 +15,7 @@ import {
   NumberInputField,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
-import { useReducer, useRef, useState } from "react";
+import React, { useReducer, useRef, useState } from "react";
 import api from "../backend/ky";
 import { NewItem as Item } from "../types/items";
 
@@ -45,7 +44,7 @@ export const AddItem = () => {
     setInput({ name: "", price: "", quantity: "" });
   };
 
-  const handleInputChange = (e: { target: { value: any; id: any } }) => {
+  const handleInputChange = (e: { target: { value: string; id: string } }) => {
     const value = e.target.value.replace(/^\$/, "");
 
     setInput({
@@ -55,7 +54,7 @@ export const AddItem = () => {
   };
 
   const handleAddItems = async (newItem: Item) => {
-    await api.post(`/items/${newItem.name}`, { json: newItem });
+    await api.post(`items/${newItem.name}`, { json: newItem });
   };
 
   const isInvalidForm = () => {
@@ -132,7 +131,6 @@ export const AddItem = () => {
                 marginBottom={1}
               >
                 <NumberInputField onChange={handleInputChange} />
-
                 {isInvalid.price.current && (
                   <FormErrorMessage>Invalid price</FormErrorMessage>
                 )}

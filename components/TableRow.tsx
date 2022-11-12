@@ -12,7 +12,7 @@ export type TableRowProps = {
 
 export const TableRow = ({ name, price, quantity }: TableRowProps) => {
   const handleItemDeletion = async (name: string) => {
-    await api.delete(`/items/${name}`);
+    await api.delete(`items/${name}`);
   };
 
   return (
@@ -22,7 +22,7 @@ export const TableRow = ({ name, price, quantity }: TableRowProps) => {
       <Td isNumeric>{quantity}</Td>
       <Td>
         <ButtonGroup>
-          <EditItem name={name} />
+          <EditItem name={name} price={price} quantity={quantity} />
           <Button colorScheme="red" onClick={() => handleItemDeletion(name)}>
             <AiFillDelete />
           </Button>

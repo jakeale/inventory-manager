@@ -15,16 +15,15 @@ import {
   NumberInputField,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
+import React, { useReducer, useRef, useState } from "react";
+import { AiFillEdit } from "react-icons/ai";
 import api from "../backend/ky";
 import { NewItem as Item } from "../types/items";
+import { TableRowProps } from "./TableRow";
 
-type EditItemProps = {
-  name: string;
-};
-
-export const EditItem = ({ name }: EditItemProps) => {
+export const EditItem = ({ name, price, quantity }: TableRowProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const isInvalid = {
     name: useRef(false),
     price: useRef(false),
@@ -32,9 +31,9 @@ export const EditItem = ({ name }: EditItemProps) => {
   };
 
   const [input, setInput] = useState<Item>({
-    name: "",
-    price: "",
-    quantity: "",
+    name: name,
+    price: price.toString(),
+    quantity: quantity.toString(),
   });
 
   const handleClose = () => {
@@ -57,7 +56,7 @@ export const EditItem = ({ name }: EditItemProps) => {
   };
 
   const handleEditItems = async (newItem: Item) => {
-    await api.put(`/items/${name}`, { json: newItem });
+    await api.put(`items/${name}`, { json: newItem });
   };
 
   const isInvalidForm = () => {
@@ -83,6 +82,7 @@ export const EditItem = ({ name }: EditItemProps) => {
     };
 
     if (isInvalidForm()) {
+      forceUpdate();
       return;
     }
 
@@ -93,7 +93,7 @@ export const EditItem = ({ name }: EditItemProps) => {
   return (
     <>
       <Button colorScheme="yellow" onClick={onOpen}>
-        Edit Item
+        <AiFillEdit />
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -117,7 +117,13 @@ export const EditItem = ({ name }: EditItemProps) => {
                 placeholder="coffee"
                 marginBottom={1}
               />
-              <FormLabel htmlFor="price">Price</FormLabel>
+              {isInvalid.name.current && (
+                <FormErrorMessage>Name is required</FormErrorMessage>
+              )}
+
+              <FormLabel htmlFor="price" marginTop={2} marginBottom={2}>
+                Price
+              </FormLabel>
               <NumberInput
                 id="price"
                 value={input.price && "$" + input.price}
@@ -131,18 +137,20 @@ export const EditItem = ({ name }: EditItemProps) => {
                   <FormErrorMessage>Invalid price</FormErrorMessage>
                 )}
               </NumberInput>
-              <FormLabel htmlFor="quantity">Quantity</FormLabel>
+
+              <FormLabel htmlFor="quantity" marginTop={2} marginBottom={2}>
+                Quantity
+              </FormLabel>
               <NumberInput
                 id="quantity"
                 value={input.quantity}
                 isInvalid={isInvalid.quantity.current}
                 placeholder="10"
               >
-                <NumberInputField onChange={handleInputChange}>
-                  {isInvalid.quantity.current && (
-                    <FormErrorMessage>Invalid quantity</FormErrorMessage>
-                  )}
-                </NumberInputField>
+                <NumberInputField onChange={handleInputChange} />
+                {isInvalid.quantity.current && (
+                  <FormErrorMessage>Invalid quantity</FormErrorMessage>
+                )}
               </NumberInput>
             </FormControl>
           </ModalBody>

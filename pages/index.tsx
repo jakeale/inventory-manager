@@ -2,6 +2,7 @@ import React from "react";
 import {
   ChakraProvider,
   Flex,
+  Spinner,
   Table,
   TableCaption,
   TableContainer,
@@ -16,20 +17,23 @@ import { AddItem } from "../components/AddItem";
 import theme from "../styles/theme";
 import api from "../backend/ky";
 import { Item } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchItems = async () => await api.get("items").json();
+
+// export async function getStaticProps() {
+//   return {
+//     props: { items: await fetchItems() }, // will be passed to the page component as props
+//   };
+// }
 
 export default function Home() {
-  const initialState: Item[] = [];
-  const [items, setItems] = useState(initialState);
-
-  useEffect(() => {
-    const fetchItems = async () => {
-      const items: Item[] = await api.get("items").json();
-
-      setItems(items);
-    };
-
-    fetchItems();
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ["items"],
+    queryFn: fetchItems,
+    initialData: [],
+    select: (data) => data as Item[],
+  });
 
   return (
     <ChakraProvider theme={theme}>
@@ -49,14 +53,18 @@ export default function Home() {
                 </Tr>
               </Thead>
               <Tbody>
-                {items.map((item) => (
-                  <TableRow
-                    name={item.name}
-                    key={item.id}
-                    price={item.price}
-                    quantity={item.quantity}
-                  ></TableRow>
-                ))}
+                {!isLoading && data ? (
+                  data.map((item) => (
+                    <TableRow
+                      name={item.name}
+                      key={item.id}
+                      price={item.price}
+                      quantity={item.quantity}
+                    />
+                  ))
+                ) : (
+                  <Spinner />
+                )}
               </Tbody>
             </Table>
             <Flex justifyContent="center">
