@@ -2,7 +2,6 @@ import React from "react";
 import {
   ChakraProvider,
   Flex,
-  Spinner,
   Table,
   TableCaption,
   TableContainer,
@@ -11,7 +10,6 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import { TableRow } from "../components/TableRow";
 import { AddItem } from "../components/AddItem";
 import theme from "../styles/theme";
@@ -20,12 +18,6 @@ import { Item } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchItems = async () => await api.get("items").json();
-
-// export async function getStaticProps() {
-//   return {
-//     props: { items: await fetchItems() }, // will be passed to the page component as props
-//   };
-// }
 
 export default function Home() {
   const { data, isLoading } = useQuery({
@@ -52,20 +44,18 @@ export default function Home() {
                   <Th>Actions</Th>
                 </Tr>
               </Thead>
-              <Tbody>
-                {!isLoading && data ? (
-                  data.map((item) => (
+              {!isLoading && data ? (
+                <Tbody>
+                  {data.map((item) => (
                     <TableRow
                       name={item.name}
                       key={item.id}
                       price={item.price}
                       quantity={item.quantity}
                     />
-                  ))
-                ) : (
-                  <Spinner />
-                )}
-              </Tbody>
+                  ))}
+                </Tbody>
+              ) : undefined}
             </Table>
             <Flex justifyContent="center">
               <AddItem />
