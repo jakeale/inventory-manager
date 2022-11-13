@@ -26,7 +26,6 @@ export default function Home() {
   const { data, isLoading } = useQuery({
     queryKey: ["items"],
     queryFn: fetchItems,
-    initialData: [],
     select: (data) => data as Item[],
   });
 
