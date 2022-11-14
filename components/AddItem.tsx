@@ -19,7 +19,11 @@ import React, { useReducer, useRef, useState } from "react";
 import api from "../backend/ky";
 import { NewItem as Item } from "../types/items";
 
-export const AddItem = () => {
+type EditItemModalProps = {
+  refetchItems: () => void;
+};
+
+export const EditItemModal = ({ refetchItems }: EditItemModalProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const isInvalid = {
@@ -55,6 +59,7 @@ export const AddItem = () => {
 
   const handleAddItems = async (newItem: Item) => {
     await api.post(`items/${newItem.name}`, { json: newItem });
+    refetchItems();
   };
 
   const isInvalidForm = () => {

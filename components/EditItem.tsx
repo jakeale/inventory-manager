@@ -21,7 +21,12 @@ import api from "../backend/ky";
 import { NewItem as Item } from "../types/items";
 import { TableRowProps } from "./TableRow";
 
-export const EditItem = ({ name, price, quantity }: TableRowProps) => {
+export const EditItemModal = ({
+  name,
+  price,
+  quantity,
+  refetchItems,
+}: TableRowProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const isInvalid = {
@@ -43,7 +48,11 @@ export const EditItem = ({ name, price, quantity }: TableRowProps) => {
       isInvalid[field as keyof typeof isInvalid].current = false;
     }
 
-    setInput({ name: "", price: "", quantity: "" });
+    setInput({
+      name: name,
+      price: price.toString(),
+      quantity: quantity.toString(),
+    });
   };
 
   const handleInputChange = (e: { target: { value: string; id: string } }) => {
@@ -57,6 +66,7 @@ export const EditItem = ({ name, price, quantity }: TableRowProps) => {
 
   const handleEditItems = async (newItem: Item) => {
     await api.put(`items/${name}`, { json: newItem });
+    refetchItems();
   };
 
   const isInvalidForm = () => {
@@ -116,6 +126,7 @@ export const EditItem = ({ name, price, quantity }: TableRowProps) => {
                 isInvalid={isInvalid.name.current}
                 placeholder="coffee"
                 marginBottom={1}
+                isDisabled
               />
               {isInvalid.name.current && (
                 <FormErrorMessage>Name is required</FormErrorMessage>
