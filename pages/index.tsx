@@ -17,16 +17,15 @@ import { TableRow } from "../components/TableRow";
 import { AddItem } from "../components/AddItem";
 import theme from "../styles/theme";
 import api from "../backend/ky";
-import { Item } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
+import { Item } from "../types/items";
 
-const fetchItems = async () => await api.get("items").json();
+const fetchItems = async (): Promise<Item[]> => await api.get("items").json();
 
 export default function Home() {
   const { data, isLoading } = useQuery({
     queryKey: ["items"],
     queryFn: fetchItems,
-    select: (data) => data as Item[],
   });
 
   return (
@@ -51,7 +50,7 @@ export default function Home() {
                   {data.map((item) => (
                     <TableRow
                       name={item.name}
-                      key={item.id}
+                      key={item.name}
                       price={item.price}
                       quantity={item.quantity}
                     />

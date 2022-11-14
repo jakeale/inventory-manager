@@ -3,3 +3,9 @@ export type NewItem = {
   price: string;
   quantity: string;
 };
+
+export type Item = {
+  name: string;
+  price: number;
+  quantity: number;
+};
