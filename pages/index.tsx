@@ -3,7 +3,6 @@ import {
   Center,
   ChakraProvider,
   Flex,
-  Skeleton,
   Spinner,
   Table,
   TableCaption,

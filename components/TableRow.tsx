@@ -1,10 +1,4 @@
 import { Button, Td, Tr, ButtonGroup } from "@chakra-ui/react";
-import { Item } from "@prisma/client";
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-} from "@tanstack/react-query";
 import React from "react";
 import { AiFillDelete } from "react-icons/ai";
 import api from "../backend/ky";

@@ -4,7 +4,7 @@ import prisma from "../../../backend/prisma";
 import { Item } from "../../../types/items";
 
 export default async function handler(
-  req: NextApiRequest,
+  _req: NextApiRequest,
   res: NextApiResponse<Item[]>
 ) {
   return res.status(200).json(
