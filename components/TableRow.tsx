@@ -1,7 +1,7 @@
 import { Button, Td, Tr, ButtonGroup } from "@chakra-ui/react";
 import React from "react";
 import { AiFillDelete } from "react-icons/ai";
-import api from "../backend/ky";
+import api from "../server/ky";
 import { EditItemModal } from "./EditItem";
 
 export type TableRowProps = {

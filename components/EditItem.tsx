@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useReducer, useRef, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
-import api from "../backend/ky";
+import api from "../server/ky";
 import { NewItem as Item } from "../types/items";
 import { TableRowProps } from "./TableRow";
 

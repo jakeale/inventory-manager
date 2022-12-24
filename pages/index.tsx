@@ -15,7 +15,7 @@ import {
 import { TableRow } from "../components/TableRow";
 import { EditItemModal } from "../components/AddItem";
 import theme from "../styles/theme";
-import api from "../backend/ky";
+import api from "../server/ky";
 import { useQuery } from "@tanstack/react-query";
 import { Item } from "../types/items";
 

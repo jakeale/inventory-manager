@@ -16,7 +16,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useReducer, useRef, useState } from "react";
-import api from "../backend/ky";
+import api from "../server/ky";
 import { NewItem as Item } from "../types/items";
 
 type EditItemModalProps = {
@@ -58,7 +58,7 @@ export const EditItemModal = ({ refetchItems }: EditItemModalProps) => {
   };
 
   const handleAddItems = async (newItem: Item) => {
-    await api.post(`items/${newItem.name}`, { json: newItem });
+    await api.put(`items/${newItem.name}`, { json: newItem });
     refetchItems();
   };
 

@@ -1,6 +1,6 @@
 import { Item } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../backend/prisma";
+import prisma from "../../../server/prisma";
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   const item = req.query.item as string;
 
-  if (req.method === "PUT" || req.method === "POST") {
+  if (req.method === "PUT") {
     const price = parseFloat(req.body.price);
     const quantity = parseInt(req.body.quantity);
 
@@ -18,7 +18,7 @@ export default async function handler(
         price: price,
         quantity: quantity,
       },
-      create: { name: item, price: price, quantity: price },
+      create: { name: item, price: price, quantity: quantity },
     });
   } else if (req.method === "DELETE") {
     await prisma.item.delete({ where: { name: item } });
