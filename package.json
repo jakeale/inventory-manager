@@ -9,7 +9,6 @@
     "ky": "^0.32.2",
     "next": "^13.0.2",
     "react": "^18.1.0",
-    "react-dom": "^18.1.0",
     "react-icons": "^4.6.0"
   },
   "scripts": {
@@ -19,9 +18,8 @@
     "lint": "next lint"
   },
   "devDependencies": {
-    "@types/node": "^18.11.9",
+    "@types/node": "^18.11.17",
     "@types/react": "^18.0.25",
-    "@types/react-dom": "^18.0.8",
     "eslint": "^8.27.0",
     "eslint-config-next": "^13.0.2",
     "prisma": "^4.6.0",
