@@ -58,7 +58,14 @@ export const EditItemModal = ({ refetchItems }: EditItemModalProps) => {
   };
 
   const handleAddItems = async (newItem: Item) => {
-    await api.put(`items/${newItem.name}`, { json: newItem });
+    const { name, price, quantity } = newItem;
+    await api.put(`items/${name}`, {
+      json: {
+        name: name,
+        price: parseFloat(price),
+        quantity: parseInt(quantity),
+      },
+    });
     refetchItems();
   };
 

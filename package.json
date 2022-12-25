@@ -9,7 +9,8 @@
     "ky": "^0.32.2",
     "next": "^13.0.2",
     "react": "^18.1.0",
-    "react-icons": "^4.6.0"
+    "react-icons": "^4.6.0",
+    "zod": "^3.20.2"
   },
   "scripts": {
     "dev": "next dev",

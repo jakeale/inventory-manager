@@ -7,7 +7,7 @@ export default async function handler(
   _req: NextApiRequest,
   res: NextApiResponse<Item[]>
 ) {
-  return res.status(200).json(
+  res.status(200).json(
     await prisma.item.findMany({
       select: { name: true, price: true, quantity: true },
     })
