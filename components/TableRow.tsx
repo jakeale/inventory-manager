@@ -1,22 +1,18 @@
 import { Button, Td, Tr, ButtonGroup } from "@chakra-ui/react";
 import React from "react";
 import { AiFillDelete } from "react-icons/ai";
+import { Item } from "types/items";
 import api from "../server/ky";
 import { EditItemModal } from "./EditItem";
 
 export type TableRowProps = {
-  name: string;
-  price: number;
-  quantity: number;
+  item: Item;
   refetchItems: () => void;
 };
 
-export const TableRow = ({
-  name,
-  price,
-  quantity,
-  refetchItems,
-}: TableRowProps) => {
+export const TableRow = ({ item, refetchItems }: TableRowProps) => {
+  const { name, price, quantity } = item;
+
   const handleItemDeletion = async (name: string) => {
     await api.delete(`items/${name}`);
     refetchItems();
@@ -29,12 +25,7 @@ export const TableRow = ({
       <Td isNumeric>{quantity}</Td>
       <Td>
         <ButtonGroup>
-          <EditItemModal
-            name={name}
-            price={price}
-            quantity={quantity}
-            refetchItems={refetchItems}
-          />
+          <EditItemModal item={item} refetchItems={refetchItems} />
           <Button colorScheme="red" onClick={() => handleItemDeletion(name)}>
             <AiFillDelete />
           </Button>

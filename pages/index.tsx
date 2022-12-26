@@ -13,7 +13,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { TableRow } from "../components/TableRow";
-import { EditItemModal } from "../components/AddItem";
+import { AddItemModal } from "../components/AddItem";
 import theme from "../styles/theme";
 import api from "../server/ky";
 import { useQuery } from "@tanstack/react-query";
@@ -48,17 +48,15 @@ export default function Home() {
                 <Tbody>
                   {data.map((item) => (
                     <TableRow
-                      name={item.name}
+                      item={item}
                       key={item.name}
-                      price={item.price}
-                      quantity={item.quantity}
                       refetchItems={refetch}
                     />
                   ))}
                 </Tbody>
               </Table>
               <Flex justifyContent="center">
-                <EditItemModal refetchItems={refetch} />
+                <AddItemModal refetchItems={refetch} />
               </Flex>
             </TableContainer>
           ) : (

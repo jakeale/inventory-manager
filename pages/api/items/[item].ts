@@ -1,44 +1,44 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { Item } from "types/items";
 import { z } from "zod";
 import prisma from "../../../server/prisma";
 
-export const itemSchema = z.object({
-  name: z.string(),
-  price: z.number(),
-  quantity: z.number(),
-});
+const itemQuerySchema = z.object({ item: z.string() });
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const validation = itemSchema.safeParse(req.query);
-  if (!validation.success) {
-    res.status(400).end();
-  }
-
-  const item = req.query.item as string;
-
   switch (req.method) {
+    case "DELETE":
+      const partialItem = itemQuerySchema.safeParse(req.query);
+
+      if (!partialItem.success) {
+        return res.status(400).end();
+      }
+
+      await prisma.item.delete({ where: { name: partialItem.data.item } });
+      break;
     case "PUT":
-      const price = parseFloat(req.body.price);
-      const quantity = parseInt(req.body.quantity);
+      const item = Item.safeParse(req.body);
+
+      if (!item.success) {
+        return res.status(400).end();
+      }
+
+      const { name, price, quantity } = item.data;
 
       await prisma.item.upsert({
-        where: { name: item },
+        where: { name: name },
         update: {
           price: price,
           quantity: quantity,
         },
-        create: { name: item, price: price, quantity: quantity },
+        create: { name: name, price: price, quantity: quantity },
       });
       break;
-    case "DELETE":
-      await prisma.item.delete({ where: { name: item } });
-      break;
     default:
-      res.status(405).end();
-      break;
+      return res.status(405).end();
   }
 
   res.status(204).end();

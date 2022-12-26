@@ -1,11 +1,9 @@
-export type NewItem = {
-  name: string;
-  price: string;
-  quantity: string;
-};
+import { z } from "zod";
 
-export type Item = {
-  name: string;
-  price: number;
-  quantity: number;
-};
+export const Item = z.object({
+  name: z.string().min(1),
+  price: z.coerce.number().min(1),
+  quantity: z.coerce.number().min(1),
+});
+
+export type Item = z.infer<typeof Item>;

@@ -16,14 +16,14 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useReducer, useRef, useState } from "react";
+import { Item } from "types/items";
 import api from "../server/ky";
-import { NewItem as Item } from "../types/items";
 
-type EditItemModalProps = {
+type AddItemModalProps = {
   refetchItems: () => void;
 };
 
-export const EditItemModal = ({ refetchItems }: EditItemModalProps) => {
+export const AddItemModal = ({ refetchItems }: AddItemModalProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const isInvalid = {
@@ -32,19 +32,21 @@ export const EditItemModal = ({ refetchItems }: EditItemModalProps) => {
     quantity: useRef(false),
   };
 
-  const [input, setInput] = useState<Item>({
+  const [input, setInput] = useState({
     name: "",
     price: "",
     quantity: "",
   });
 
-  const handleClose = () => {
-    onClose();
-
+  const resetInvalidState = () => {
     for (const field in isInvalid) {
       isInvalid[field as keyof typeof isInvalid].current = false;
     }
+  };
 
+  const handleClose = () => {
+    onClose();
+    resetInvalidState();
     setInput({ name: "", price: "", quantity: "" });
   };
 
@@ -58,40 +60,35 @@ export const EditItemModal = ({ refetchItems }: EditItemModalProps) => {
   };
 
   const handleAddItems = async (newItem: Item) => {
-    const { name, price, quantity } = newItem;
-    await api.put(`items/${name}`, {
-      json: {
-        name: name,
-        price: parseFloat(price),
-        quantity: parseInt(quantity),
-      },
+    await api.put(`items/${newItem.name}`, {
+      json: newItem,
     });
     refetchItems();
   };
 
-  const isInvalidForm = () => {
-    let invalid = false;
-
-    for (const field in input) {
-      if (["", 0].includes(input[field as keyof Item])) {
-        isInvalid[field as keyof typeof isInvalid].current = true;
-        invalid = true;
-      } else {
-        isInvalid[field as keyof typeof isInvalid].current = false;
-      }
-    }
-
-    return invalid;
-  };
-
-  const handleAddButtonClick = () => {
-    const newItem = {
+  const parseForm = () => {
+    const newItem = Item.safeParse({
       name: input.name,
       price: input.price,
       quantity: input.quantity,
-    };
+    });
 
-    if (isInvalidForm()) {
+    if (!newItem.success) {
+      newItem.error.issues.forEach((issue) => {
+        isInvalid[issue.path[0] as keyof typeof isInvalid].current = true;
+      });
+
+      return null;
+    }
+
+    return newItem.data;
+  };
+
+  const handleAddButtonClick = () => {
+    resetInvalidState();
+    const newItem = parseForm();
+
+    if (!newItem) {
       forceUpdate();
       return;
     }
@@ -105,7 +102,6 @@ export const EditItemModal = ({ refetchItems }: EditItemModalProps) => {
       <Button colorScheme="blue" onClick={onOpen}>
         Add Item
       </Button>
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
