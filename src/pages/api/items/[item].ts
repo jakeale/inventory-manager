@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Item } from "types/items";
 import { z } from "zod";
 import prisma from "../../../server/prisma";
-
-const itemQuerySchema = z.object({ item: z.string() });
+import { Item } from "../../../types/items";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,6 +9,7 @@ export default async function handler(
 ) {
   switch (req.method) {
     case "DELETE":
+      const itemQuerySchema = z.object({ item: z.string() });
       const partialItem = itemQuerySchema.safeParse(req.query);
 
       if (!partialItem.success) {

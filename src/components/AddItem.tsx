@@ -16,7 +16,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useReducer, useRef, useState } from "react";
-import { Item } from "types/items";
+import { Item } from "../types/items";
 import api from "../server/ky";
 
 type AddItemModalProps = {
@@ -67,11 +67,7 @@ export const AddItemModal = ({ refetchItems }: AddItemModalProps) => {
   };
 
   const parseForm = () => {
-    const newItem = Item.safeParse({
-      name: input.name,
-      price: input.price,
-      quantity: input.quantity,
-    });
+    const newItem = Item.safeParse(input);
 
     if (!newItem.success) {
       newItem.error.issues.forEach((issue) => {

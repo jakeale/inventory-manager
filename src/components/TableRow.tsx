@@ -1,7 +1,7 @@
 import { Button, Td, Tr, ButtonGroup } from "@chakra-ui/react";
 import React from "react";
 import { AiFillDelete } from "react-icons/ai";
-import { Item } from "types/items";
+import { Item } from "../types/items";
 import api from "../server/ky";
 import { EditItemModal } from "./EditItem";
 

@@ -63,11 +63,7 @@ export const EditItemModal = ({ item, refetchItems }: TableRowProps) => {
   };
 
   const parseForm = () => {
-    const newItem = Item.safeParse({
-      name: input.name,
-      price: input.price,
-      quantity: input.quantity,
-    });
+    const newItem = Item.safeParse(item);
 
     if (!newItem.success) {
       newItem.error.issues.forEach((issue) => {
